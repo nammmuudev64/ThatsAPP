@@ -1,0 +1,17 @@
+{
+  "name": "thatsapp",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
+    "build": "npm --prefix frontend run build",
+    "start:backend": "npm --prefix backend run start"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

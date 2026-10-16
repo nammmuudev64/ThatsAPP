@@ -1,0 +1,38 @@
+services:
+  # PostgreSQL stores accounts, conversations, messages, media metadata, and notifications.
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5433:5432"
+    environment:
+      POSTGRES_DB: thatsapp
+      POSTGRES_USER: thatsapp_app
+      POSTGRES_PASSWORD: thatsapp_dev_password
+    volumes:
+      - thatsapp-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U thatsapp_app -d thatsapp"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  # Redis supports live presence and cross-instance Socket.IO event delivery.
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:6380:6379"
+    volumes:
+      - thatsapp-redis:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  # Named volumes keep service data across container restarts.
+  thatsapp-postgres:
+  thatsapp-redis:
